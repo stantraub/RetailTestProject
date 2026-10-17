@@ -51,11 +51,11 @@ bin/rails db:migrate
 bin/rails db:seed
 ```
 
-### Importing Tracking Events
+### Importing Inventory Events
 
 To import the million-row CSV file:
 ```bash
-bin/rails tracking_events:import
+bin/rails inventory_events:import
 ```
 
 ## Objectives

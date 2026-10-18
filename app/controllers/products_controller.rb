@@ -5,6 +5,7 @@ class ProductsController < ApplicationController
 
   def show
     @product = Product.find(params[:id])
+    @latest_prices = @product.price_events.latest_per_store.includes(:store)
   end
 end
 

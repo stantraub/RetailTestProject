@@ -14,6 +14,30 @@
   <%= @product.inventory_events.size %>
 </p>
 
+<h2>Latest Prices</h2>
+<% if @latest_prices.empty? %>
+  <p>No price data yet.</p>
+<% else %>
+  <table>
+    <thead>
+      <tr>
+        <th>Store Address</th>
+        <th>Price</th>
+        <th>As Of</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @latest_prices.each do |price_event| %>
+        <tr>
+          <td><%= link_to price_event.store.address, store_path(price_event.store) %></td>
+          <td><%= number_to_currency(price_event.price) %></td>
+          <td><%= price_event.event_time.strftime("%Y-%m-%d") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
 <h2>Inventory Events</h2>
 <table>
   <thead>

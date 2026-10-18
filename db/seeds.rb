@@ -1,9 +1,13 @@
 # db/seeds.rb
 
-# Clear existing data (adjust if you have dependent models like, etc.)
+# Clear existing data. Events reference the other tables through foreign keys, so
+# they go first. Re-seeding also removes imported events; re-run
+# `inventory_events:import` afterwards.
+PriceEvent.delete_all
+InventoryEvent.delete_all
 Store.destroy_all
-Brand.destroy_all
 Product.destroy_all
+Brand.destroy_all
 
 brands_products = {
   "The Prancing Pony" => [
@@ -443,5 +447,37 @@ puts "Creating Stores..."
 store_addresses.each do |address|
   Store.create!(address: address)
 end
+
+puts "Creating sample price events..."
+
+# ASSUMPTION: no price data was provided, so these prices are fake and
+# deterministic. Only a sample of store/product pairs gets prices, unrelated to
+# the CSV's inventory events. See the README.
+rng = Random.new(42)
+stores = Store.pluck(:id)
+period = (Date.new(2025, 1, 1)..Date.new(2025, 10, 31)).to_a
+rows = []
+
+Product.pluck(:id).each do |product_id|
+  base_price = rng.rand(2.0..60.0)
+
+  stores.sample(25, random: rng).each do |store_id|
+    store_factor = rng.rand(0.9..1.15)
+
+    period.sample(4, random: rng).sort.each do |date|
+      drift = rng.rand(0.95..1.08)
+      store_factor *= drift
+      rows << {
+        product_id: product_id,
+        store_id: store_id,
+        price: (base_price * store_factor).round(2),
+        event_time: date.to_time
+      }
+    end
+  end
+end
+
+rows.each_slice(5_000) { |batch| PriceEvent.insert_all(batch) }
+puts "Created #{PriceEvent.count} price events"
 
 puts "Seed complete!"

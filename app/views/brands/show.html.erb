@@ -1,33 +1,30 @@
+<p class="back"><%= link_to "← Brands", brands_path %></p>
+<p class="eyebrow">Brand</p>
 <h1><%= @brand.name %></h1>
 
-<p>
-  <strong>Total Products:</strong>
-  <%= @products.size %>
-</p>
+<div class="stats">
+  <div class="stat">
+    <p class="stat-label">Total Products</p>
+    <p class="stat-value"><%= @products.size %></p>
+  </div>
+</div>
 
-<h2>Products</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Inventory Events</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @products.each do |product| %>
+<div class="card flush">
+  <h2>Products</h2>
+  <table>
+    <thead>
       <tr>
-        <td><%= product.name %></td>
-        <td><%= @event_counts.fetch(product.id, 0) %></td>
-        <td><%= link_to "View Product", product_path(product) %></td>
+        <th>Name</th>
+        <th class="num">Inventory Events</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<nav>
-  <%= link_to "Back to Brands", brands_path %> |
-  <%= link_to "Products", products_path %> |
-  <%= link_to "Stores", stores_path %>
-</nav>
-
+    </thead>
+    <tbody>
+      <% @products.each do |product| %>
+        <tr>
+          <td><%= link_to product.name, product_path(product) %></td>
+          <td class="num"><%= number_with_delimiter(@event_counts.fetch(product.id, 0)) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

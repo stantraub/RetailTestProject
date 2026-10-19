@@ -1,28 +1,21 @@
 <h1>Brands</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Products</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @brands.each do |brand| %>
+<div class="card flush">
+  <table>
+    <thead>
       <tr>
-        <td><%= brand.name %></td>
-        <td><%= @product_counts.fetch(brand.id, 0) %></td>
-        <td><%= link_to "View", brand_path(brand) %></td>
+        <th>Name</th>
+        <th class="num">Products</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<%= render "shared/pagination" %>
-
-<nav>
-  <%= link_to "Products", products_path %> |
-  <%= link_to "Stores", stores_path %>
-</nav>
-
+    </thead>
+    <tbody>
+      <% @brands.each do |brand| %>
+        <tr>
+          <td><%= link_to brand.name, brand_path(brand) %></td>
+          <td class="num"><%= @product_counts.fetch(brand.id, 0) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= render "shared/pagination" %>
+</div>

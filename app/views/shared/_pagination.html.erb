@@ -1,11 +1,12 @@
 <% if @pagy.last > 1 %>
-  <p>
-    Page <%= @pagy.page %> of <%= @pagy.last %>
+  <p class="pager">
+    <span>Page <%= @pagy.page %> of <%= @pagy.last %></span>
+    <span class="spacer"></span>
     <% if @pagy.previous %>
-      | <%= link_to "Previous", @pagy.page_url(:previous) %>
+      <%= link_to "Previous", @pagy.page_url(:previous), class: "btn" %>
     <% end %>
     <% if @pagy.next %>
-      | <%= link_to "Next", @pagy.page_url(:next) %>
+      <%= link_to "Next", @pagy.page_url(:next), class: "btn" %>
     <% end %>
   </p>
 <% end %>

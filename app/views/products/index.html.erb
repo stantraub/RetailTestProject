@@ -1,30 +1,27 @@
 <h1>Products</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Brand</th>
-      <th>Inventory Events</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @products.each do |product| %>
+<div class="card flush">
+  <table>
+    <thead>
       <tr>
-        <td><%= product.name %></td>
-        <td><%= product.brand&.name %></td>
-        <td><%= @event_counts.fetch(product.id, 0) %></td>
-        <td><%= link_to "View", product_path(product) %></td>
+        <th>Name</th>
+        <th>Brand</th>
+        <th class="num">Inventory Events</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<%= render "shared/pagination" %>
-
-<nav>
-  <%= link_to "Brands", brands_path %> |
-  <%= link_to "Stores", stores_path %>
-</nav>
-
+    </thead>
+    <tbody>
+      <% @products.each do |product| %>
+        <tr>
+          <td><%= link_to product.name, product_path(product) %></td>
+          <td>
+            <% if product.brand %>
+              <%= link_to product.brand.name, brand_path(product.brand) %>
+            <% end %>
+          </td>
+          <td class="num"><%= number_with_delimiter(@event_counts.fetch(product.id, 0)) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= render "shared/pagination" %>
+</div>

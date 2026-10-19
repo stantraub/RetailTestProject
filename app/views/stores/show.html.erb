@@ -7,7 +7,7 @@
 
 <p>
   <strong>Total Inventory Events:</strong>
-  <%= @store.inventory_events.size %>
+  <%= @pagy.count %>
 </p>
 
 <h2>Latest Prices</h2>
@@ -45,7 +45,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @store.inventory_events.each do |event| %>
+    <% @events.each do |event| %>
       <tr>
         <td><%= event.event_time&.strftime("%Y-%m-%d %H:%M") %></td>
         <td><%= event.inventory_present ? "Yes" : "No" %></td>
@@ -55,6 +55,8 @@
     <% end %>
   </tbody>
 </table>
+
+<%= render "shared/pagination" %>
 
 <nav>
   <%= link_to "Back to Stores", stores_path %> |

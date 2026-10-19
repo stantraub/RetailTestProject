@@ -65,3 +65,8 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "pagy", "~> 43.4"
+# Pagy allows any json, but json 3 dropped the quirks_mode option that Rails 7.1
+# still passes when encoding JSON, which makes every page error. Stay on json 2.
+gem "json", "< 3"

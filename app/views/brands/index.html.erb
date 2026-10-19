@@ -12,12 +12,14 @@
     <% @brands.each do |brand| %>
       <tr>
         <td><%= brand.name %></td>
-        <td><%= brand.products.size %></td>
+        <td><%= @product_counts.fetch(brand.id, 0) %></td>
         <td><%= link_to "View", brand_path(brand) %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+
+<%= render "shared/pagination" %>
 
 <nav>
   <%= link_to "Products", products_path %> |

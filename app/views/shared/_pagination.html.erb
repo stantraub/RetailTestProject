@@ -1,0 +1,11 @@
+<% if @pagy.last > 1 %>
+  <p>
+    Page <%= @pagy.page %> of <%= @pagy.last %>
+    <% if @pagy.previous %>
+      | <%= link_to "Previous", @pagy.page_url(:previous) %>
+    <% end %>
+    <% if @pagy.next %>
+      | <%= link_to "Next", @pagy.page_url(:next) %>
+    <% end %>
+  </p>
+<% end %>

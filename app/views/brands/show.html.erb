@@ -2,7 +2,7 @@
 
 <p>
   <strong>Total Products:</strong>
-  <%= @brand.products.size %>
+  <%= @products.size %>
 </p>
 
 <h2>Products</h2>
@@ -15,10 +15,10 @@
     </tr>
   </thead>
   <tbody>
-    <% @brand.products.each do |product| %>
+    <% @products.each do |product| %>
       <tr>
         <td><%= product.name %></td>
-        <td><%= product.inventory_events.size %></td>
+        <td><%= @event_counts.fetch(product.id, 0) %></td>
         <td><%= link_to "View Product", product_path(product) %></td>
       </tr>
     <% end %>

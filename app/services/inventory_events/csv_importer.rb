@@ -1,47 +1,75 @@
 require "csv"
 
 module InventoryEvents
+  # Imports inventory checks from a CSV with the columns:
+  #   Address, Product Name, Date, Inventory Present
+  #
+  # Importing the same file twice inserts its events twice; clear events first
+  # (re-running db:seed does this).
   class CsvImporter
+    BATCH_SIZE = 5_000
+
+    TRUE_VALUES = %w[true TRUE t T 1 True].freeze
+
+    Result = Struct.new(:rows, :created, :unknown, :invalid, keyword_init: true)
+
     def initialize(path)
       @path = path
     end
 
     def call
-      row_count = 0
-      created_count = 0
+      store_ids   = Store.pluck(:address, :id).to_h
+      product_ids = Product.pluck(:name, :id).to_h
+      times       = {} # the file has about 365 distinct dates; parse each once
+      batch       = []
+      result      = Result.new(rows: 0, created: 0, unknown: 0, invalid: 0)
 
       CSV.foreach(@path, headers: true) do |row|
-        row_count += 1
+        result.rows += 1
 
-        store   = Store.find_by(address: row["Address"])
-        product = Product.find_by(name: row["Product Name"])
+        store_id   = store_ids[row["Address"]]
+        product_id = product_ids[row["Product Name"]]
+        unless store_id && product_id
+          result.unknown += 1
+          next
+        end
 
-        # If there's bad data, just skip it (or you could log it)
-        next unless store && product
+        date = row["Date"]
+        event_time = times.fetch(date) { times[date] = parse_time(date) }
+        unless event_time
+          result.invalid += 1
+          next
+        end
 
-        event_time       = Date.parse(row["Date"])
-        inventory_present = cast_boolean(row["Inventory Present"])
-
-        InventoryEvent.create!(
-          store: store,
-          product: product,
+        batch << {
+          store_id: store_id,
+          product_id: product_id,
           event_time: event_time,
-          inventory_present: inventory_present
-        )
-
-        created_count += 1
+          inventory_present: TRUE_VALUES.include?(row["Inventory Present"])
+        }
+        flush(batch, result) if batch.size >= BATCH_SIZE
       end
 
-      Rails.logger.info "[InventoryEvents::CsvImporter] rows processed=#{row_count} created=#{created_count}"
+      flush(batch, result)
+
+      Rails.logger.info "[InventoryEvents::CsvImporter] #{result.to_h}"
+      result
     end
 
     private
 
-    def cast_boolean(value)
-      case value
-      when true, "true", "TRUE", "t", "T", "1", "True" then true
-      else false
-      end
+    def flush(batch, result)
+      return if batch.empty?
+
+      InventoryEvent.insert_all(batch, returning: false)
+      result.created += batch.size
+      batch.clear
+    end
+
+    def parse_time(value)
+      Date.parse(value.to_s).in_time_zone
+    rescue Date::Error
+      nil
     end
   end
 end

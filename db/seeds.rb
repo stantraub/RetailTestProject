@@ -1,8 +1,9 @@
 # db/seeds.rb
 
-# Clear existing data. Events reference the other tables through foreign keys, so
-# they go first. Re-seeding also removes imported events; re-run
-# `inventory_events:import` afterwards.
+# Clear existing data. Alerts and events reference the other tables through
+# foreign keys, so they go first. Re-seeding also removes imported events and
+# alerts; re-run `inventory_events:import` and then `alerts:detect` afterwards.
+Alert.delete_all
 PriceEvent.delete_all
 InventoryEvent.delete_all
 Store.destroy_all

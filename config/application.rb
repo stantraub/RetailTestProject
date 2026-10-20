@@ -16,6 +16,10 @@ module RetailTestProject
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w(assets tasks))
 
+    # How many "no inventory" checks in a row (per store and product) create an
+    # alert. Override with ALERT_STREAK_LENGTH, or per run with alerts:detect[N].
+    config.x.alerts.streak_length = Integer(ENV.fetch("ALERT_STREAK_LENGTH", 2))
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

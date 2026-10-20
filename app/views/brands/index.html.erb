@@ -6,6 +6,7 @@
       <tr>
         <th>Name</th>
         <th class="num">Products</th>
+        <th class="num">Alerts</th>
       </tr>
     </thead>
     <tbody>
@@ -13,6 +14,10 @@
         <tr>
           <td><%= link_to brand.name, brand_path(brand) %></td>
           <td class="num"><%= @product_counts.fetch(brand.id, 0) %></td>
+          <td class="num">
+            <% alerts = @alert_counts.fetch(brand.id, 0) %>
+            <%= alerts.positive? ? link_to(number_with_delimiter(alerts), alerts_path(brand_id: brand.id)) : alerts %>
+          </td>
         </tr>
       <% end %>
     </tbody>

@@ -80,6 +80,8 @@ h2 { margin: 0 0 12px; font-size: 16px; }
   margin-bottom: 20px;
 }
 .card.flush { padding: 0; overflow-x: auto; }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px 12px; }
+.card-head h2 { margin: 0; }
 .card > h2:first-child { margin-bottom: 14px; }
 .card.flush > h2 { padding: 16px 20px 0; }
 

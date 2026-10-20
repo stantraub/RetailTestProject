@@ -1,0 +1,43 @@
+<p class="back"><%= link_to "← Alerts", alerts_path %></p>
+<p class="eyebrow">Alert</p>
+<h1>No inventory <%= @alert.streak_length %> times in a row</h1>
+
+<div class="split">
+  <section>
+    <div class="card">
+      <dl class="details">
+        <dt>Brand</dt>
+        <dd><%= link_to @alert.brand.name, brand_path(@alert.brand) %></dd>
+        <dt>Product</dt>
+        <dd><%= link_to @alert.product.name, product_path(@alert.product) %></dd>
+        <dt>Store</dt>
+        <dd><%= link_to @alert.store.address, store_path(@alert.store) %></dd>
+        <dt>Triggered</dt>
+        <dd><%= @alert.triggered_at.strftime("%Y-%m-%d %H:%M") %></dd>
+      </dl>
+    </div>
+    <p class="meta">This store reported no inventory for this product <%= @alert.streak_length %> times in a row.</p>
+  </section>
+
+  <section>
+    <div class="card flush">
+      <h2>Events That Triggered This Alert</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Event Time</th>
+            <th>In Stock?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @events.each do |event| %>
+            <tr>
+              <td class="nowrap"><%= event.event_time.strftime("%Y-%m-%d %H:%M") %></td>
+              <td><%= presence_badge(event.inventory_present) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

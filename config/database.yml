@@ -78,7 +78,13 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  <<: *default
-  database: retail_test_project_production
-  username: retail_test_project
-  password: <%= ENV["RETAIL_TEST_PROJECT_DATABASE_PASSWORD"] %>
+  primary: &primary_production
+    <<: *default
+    database: retail_test_project_production
+    username: retail_test_project
+    password: <%= ENV["RETAIL_TEST_PROJECT_DATABASE_PASSWORD"] %>
+  # Solid Queue tables live in their own database (see config/environments/production.rb)
+  queue:
+    <<: *primary_production
+    database: retail_test_project_production_queue
+    migrations_paths: db/queue_migrate
